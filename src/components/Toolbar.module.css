@@ -1,0 +1,58 @@
+.toolbar {
+  height: 44px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #1e1e1e;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.left { display: flex; align-items: center; min-width: 140px; }
+.center { flex: 1; display: flex; align-items: center; gap: 4px; }
+.right { display: flex; align-items: center; min-width: 140px; justify-content: flex-end; }
+
+.logo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #4fc3f7;
+}
+
+.btn {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #c0c0c0;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  transition: background 0.15s, color 0.15s;
+}
+.btn:hover { background: #252525; color: #fff; }
+.btn:active { background: #1e1e1e; }
+.btnActive { background: #1a3a2a; border-color: #4caf82; color: #4caf82; }
+.btnActive:hover { background: #1e4a32; color: #6fcfa0; }
+
+.btnPrimary {
+  background: #1a3a4a;
+  border-color: #4fc3f7;
+  color: #4fc3f7;
+}
+.btnPrimary:hover { background: #1e4a5a; color: #80d8ff; }
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: #2a2a2a;
+  margin: 0 4px;
+}
+
+.tag {
+  font-size: 10px;
+  color: #444;
+  letter-spacing: 0.03em;
+}
