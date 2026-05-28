@@ -7,8 +7,10 @@ import WelcomeScreen from './components/WelcomeScreen'
 function App() {
   const [imageIds, setImageIds] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [approach, setApproach] = useState(null)      // null | 'right' | 'left'
-  const [preset, setPreset] = useState('CT-Bone')     // 'CT-Bone' | 'CT-Soft-Tissue'
+  const [approach, setApproach] = useState(null)
+  const [preset, setPreset] = useState('CT-Bone')
+  const [resetTrigger, setResetTrigger] = useState(0)
+  const [seriesLabel, setSeriesLabel] = useState('')
 
   const handleFiles = async (files) => {
     const dicomFiles = Array.from(files).filter(f =>
@@ -20,9 +22,19 @@ function App() {
     }
     setIsLoading(true)
     setApproach(null)
+
+    const firstFile = dicomFiles[0]
+    const pathParts = (firstFile.webkitRelativePath || firstFile.name).split('/')
+    setSeriesLabel(pathParts.length > 1 ? pathParts[pathParts.length - 2] : firstFile.name)
+
     const ids = dicomFiles.map(f => `wadouri:${URL.createObjectURL(f)}`)
     setImageIds(ids)
     setIsLoading(false)
+  }
+
+  const handleReset = () => {
+    setApproach(null)
+    setResetTrigger(n => n + 1)
   }
 
   const hasData = imageIds.length > 0
@@ -36,12 +48,20 @@ function App() {
         onApproach={setApproach}
         preset={preset}
         onPreset={setPreset}
+        onReset={handleReset}
+        seriesLabel={seriesLabel}
+        sliceCount={imageIds.length}
       />
       <div className="main-area">
         {!hasData ? (
           <WelcomeScreen onFiles={handleFiles} isLoading={isLoading} />
         ) : (
-          <Viewer3D imageIds={imageIds} approach={approach} preset={preset} />
+          <Viewer3D
+            imageIds={imageIds}
+            approach={approach}
+            preset={preset}
+            resetTrigger={resetTrigger}
+          />
         )}
       </div>
     </div>

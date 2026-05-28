@@ -6,32 +6,32 @@ const RENDERING_ENGINE_ID = 'wooriEngine'
 const VIEWPORT_ID = 'VIEWPORT_3D'
 const VOLUME_ID = 'cornerstoneStreamingImageVolume:wooriVolume'
 
-// ── 커스텀 프리셋 (setProperties에 객체로 직접 전달 가능) ────────────────
-// 300 HU 이하 완전 투명 → 뼈만 아이보리/흰색으로 렌더링 (ALTICIAN 스타일)
+// ── 커스텀 프리셋 ────────────────────────────────────────────────────────
+// gradientOpacity: 표면(gradient 큰 곳)만 밝게, 내부 노이즈 억제 → ALTICIAN 스타일
 const WOORI_BONE_PRESET = {
   name: 'WOORI-Bone',
-  gradientOpacity: '4 0 1 255 1',
-  specularPower: '20',
-  scalarOpacity: '8 -3024 0 300 0 420 0.60 3071 0.72',
-  specular: '0.30',
+  gradientOpacity: '4 0 0.05 300 1',   // 내부=0.05, 뼈 표면 경계=1.0
+  specularPower: '25',
+  scalarOpacity: '8 -3024 0 300 0 420 0.88 3071 0.92',
+  specular: '0.40',
   shade: '1',
-  ambient: '0.15',
-  colorTransfer: '16 -3024 0 0 0 300 0 0 0 420 0.88 0.82 0.65 3071 1 1 1',
-  diffuse: '0.90',
+  ambient: '0.20',
+  colorTransfer: '16 -3024 0 0 0 300 0 0 0 420 0.93 0.88 0.74 3071 1 1 1',
+  diffuse: '0.85',
   interpolation: '1',
 }
 
 // 연조직 프리셋: 디스크·신경·척수도 보이도록
 const WOORI_SOFT_PRESET = {
   name: 'WOORI-Soft',
-  gradientOpacity: '4 0 1 255 1',
+  gradientOpacity: '4 0 0.10 200 1',
   specularPower: '10',
-  scalarOpacity: '12 -3024 0 -77 0 50 0.12 200 0.30 400 0.50 3071 0.70',
+  scalarOpacity: '10 -3024 0 -77 0 50 0.15 200 0.35 400 0.55 3071 0.72',
   specular: '0.20',
   shade: '1',
-  ambient: '0.15',
+  ambient: '0.18',
   colorTransfer: '24 -3024 0 0 0 -77 0.55 0.25 0.15 50 0.88 0.60 0.29 200 1.0 0.94 0.95 400 0.75 0.75 0.85 3071 1 1 1',
-  diffuse: '0.90',
+  diffuse: '0.88',
   interpolation: '1',
 }
 
@@ -74,7 +74,7 @@ function rotateCamera(viewport, angleDeg) {
   }
 }
 
-export default function Viewer3D({ imageIds, approach, preset }) {
+export default function Viewer3D({ imageIds, approach, preset, resetTrigger }) {
   const containerRef = useRef(null)
   const engineRef   = useRef(null)
   const viewportRef = useRef(null)
@@ -212,6 +212,17 @@ export default function Viewer3D({ imageIds, approach, preset }) {
     if (!vp) return
     applyPreset(vp, preset)
   }, [preset])
+
+  // ── Reset View 트리거 ─────────────────────────────────────
+  useEffect(() => {
+    if (!resetTrigger) return
+    const vp = viewportRef.current
+    if (!vp) return
+    applyPreset(vp, preset)
+    vp.resetCamera()
+    rotateCamera(vp, 30)
+    vp.render()
+  }, [resetTrigger])
 
   // ── 언마운트 정리 ────────────────────────────────────────
   useEffect(() => () => {
